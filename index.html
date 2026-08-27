@@ -410,7 +410,12 @@ label.f input::placeholder{color:var(--ink-3);opacity:.7}
   function save() {
     if (saving) return;
     var b = document.getElementById('savebtn');
-    if (!window.claude || !window.claude.use) { toast('이 화면에서는 클라우드 저장을 쓸 수 없어요. 기기에는 저장돼 있습니다.'); return; }
+    if (!window.claude || !window.claude.use) {
+      dirty = false;                 // 이 배포에는 클라우드 저장이 없고, 입력할 때마다 이미 이 기기에 자동 저장되고 있어요
+      render();                      // render()가 토스트 DOM도 새로 만들기 때문에, toast()는 반드시 그 뒤에 호출해야 함
+      toast('이 기기에 자동으로 저장되고 있어요. 다른 기기와는 동기화되지 않아요.');
+      return;
+    }
     saving = true; if (b) { b.disabled = true; b.textContent = '저장 중…'; }
     window.claude.use('artifact').then(function (a) {
       if (!a) throw { code: 'not_granted' };
