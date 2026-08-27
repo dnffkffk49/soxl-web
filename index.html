@@ -439,10 +439,10 @@ label.f input::placeholder{color:var(--ink-3);opacity:.7}
   }
 
   /* ---------------- 종가 자동 갱신 ---------------- */
-  // /api/price(Cloudflare Pages Function)에서 최근 종가를 받아와
+  // prices.json(같은 저장소에서 GitHub Actions가 매일 갱신해 커밋하는 파일)을 읽어와
   // 아직 값이 없거나 자동으로 채웠던 값만 채우고, 손으로 고친 값은 건드리지 않습니다.
   function syncPrices() {
-    fetch('/api/price').then(function (r) { return r.ok ? r.json() : null; })
+    fetch('prices.json?t=' + Date.now()).then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !data.prices || !data.prices.length) return;
         var changed = false;
